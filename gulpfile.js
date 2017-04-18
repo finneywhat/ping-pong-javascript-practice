@@ -7,9 +7,7 @@ var utilities = require('gulp-util');
 var del = require('del');
 var jshint = require('gulp-jshint');
 var buildProduction = utilities.env.production;
-//use require function in order to load the gulp package into a gulp variable that can be used in our code
 
-//when using require, it's standard practice to have the variable name (e.g. gulp) be the same as the package name, though technically the variable name could be anything
 var lib = require("bower-files")({
   "overrides":{
   "bootstrap" : {
@@ -21,7 +19,6 @@ var lib = require("bower-files")({
   }
 }
 });
-}
 
 gulp.task('concatInterface', function() {
   return gulp.src(['./js/*-interface.js'])
@@ -52,6 +49,7 @@ gulp.task('build', ['clean'], function(){
   } else {
     gulp.start('jsBrowserify');
   }
+  gulp.start('bower');
 });
 
 gulp.task('jshint', function(){
@@ -66,3 +64,11 @@ gulp.task('bowerJS', function() {
     .pipe(uglify())
     .pipe(gulp.dest('./build/js'));
 })
+
+gulp.task('bowerCSS', function() {
+  return gulp.src(lib.ext('css').files)
+  .pipe(concat('vendor.css'))
+  .pipe(gulp.dest('./build/css'));
+});
+
+gulp.task('bower', ['bowerJS', 'bowerCSS']);
