@@ -10,6 +10,18 @@ var buildProduction = utilities.env.production;
 //use require function in order to load the gulp package into a gulp variable that can be used in our code
 
 //when using require, it's standard practice to have the variable name (e.g. gulp) be the same as the package name, though technically the variable name could be anything
+var lib = require("bower-files")({
+  "overrides":{
+  "bootstrap" : {
+    "main": [
+      "less/bootstrap.less",
+      "dist/css/bootstrap.css",
+      "dist/js/bootstrap.js"
+    ]
+  }
+}
+});
+}
 
 gulp.task('concatInterface', function() {
   return gulp.src(['./js/*-interface.js'])
@@ -47,3 +59,10 @@ gulp.task('jshint', function(){
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
 });
+
+gulp.task('bowerJS', function() {
+  return gulp.src(lib.ext('js').files)
+    .pipe(concat('vendor.min.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('./build/js'));
+})
